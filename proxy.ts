@@ -1,10 +1,30 @@
+import { NextRequest, NextResponse } from "next/server";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const protectedRoutes = createRouteMatcher(["/dashboard(.*)"]);
+const protectedRoutes = createRouteMatcher(["/onboarding(.*)"]);
 
-export default clerkMiddleware(async (auth, req) => {
-	if (protectedRoutes(req)) {
-		await auth.protect();
+const dashboardRoutes = createRouteMatcher(["/dashboard(.*)"]);
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+	const { isAuthenticated, sessionClaims, redirectToSignIn } = await auth();
+
+	if (!isAuthenticated && (protectedRoutes(req) || dashboardRoutes(req))) {
+		return redirectToSignIn({ returnBackUrl: req.url });
+	}
+
+	// Redirect to onboarding if user is authenticated but has not completed onboarding
+	if (isAuthenticated) {
+		if (
+			!sessionClaims?.metadata?.onboardingComplete &&
+			req.nextUrl.pathname !== "/onboarding"
+		) {
+			const onboardingUrl = new URL("/onboarding", req.url);
+			return NextResponse.redirect(onboardingUrl);
+		}
+
+		if (protectedRoutes(req)) {
+			return NextResponse.next();
+		}
 	}
 });
 
