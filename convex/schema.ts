@@ -10,6 +10,9 @@ export default defineSchema({
 		email: v.string(),
 		createdAt: v.number(),
 		clerkId: v.string(),
+		preferences: v.object({
+			accountId: v.optional(v.string()),
+		}),
 	}).index("by_email", ["email"]),
 
 	integration: defineTable({

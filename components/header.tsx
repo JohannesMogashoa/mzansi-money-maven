@@ -93,33 +93,6 @@ const Header = () => {
 				</Unauthenticated>
 			</div>
 		</header>
-
-		// <NavigationMenuList className="flex-wrap">
-		// 	<NavigationMenuItem>
-		// 		<NavigationMenuLink
-		// 			asChild
-		// 			className={navigationMenuTriggerStyle()}
-		// 		>
-		// 			<Link href="/">Home</Link>
-		// 		</NavigationMenuLink>
-		// 	</NavigationMenuItem>
-		// 	<NavigationMenuItem>
-		// 		<NavigationMenuLink
-		// 			asChild
-		// 			className={navigationMenuTriggerStyle()}
-		// 		>
-		// 			<Link href="/">Agent Controls</Link>
-		// 		</NavigationMenuLink>
-		// 	</NavigationMenuItem>
-		// 	<NavigationMenuItem>
-		// 		<NavigationMenuLink
-		// 			asChild
-		// 			className={navigationMenuTriggerStyle()}
-		// 		>
-		// 			<Link href="/">Settings</Link>
-		// 		</NavigationMenuLink>
-		// 	</NavigationMenuItem>
-		// </NavigationMenuList>
 	);
 };
 

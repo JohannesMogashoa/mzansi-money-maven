@@ -20,6 +20,15 @@ export const addIntegration = mutation({
 	},
 });
 
+export const getIntegrationById = query({
+	args: {
+		integrationId: v.id("integration"),
+	},
+	handler: async (ctx, { integrationId }) => {
+		return await ctx.db.get(integrationId);
+	},
+});
+
 export const getIntegrationByUserId = query({
 	args: {
 		userId: v.id("users"),

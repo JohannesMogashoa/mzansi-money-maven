@@ -15,6 +15,7 @@ export const createUser = mutation({
 			email,
 			clerkId,
 			createdAt: now,
+			preferences: {},
 		});
 		return userId;
 	},
