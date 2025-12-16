@@ -47,6 +47,7 @@
 		"cmdk": "1.0.4",
 		"convex": "^1.30.0",
 		"date-fns": "4.1.0",
+		"dayjs": "^1.11.19",
 		"embla-carousel-react": "8.5.1",
 		"input-otp": "1.4.1",
 		"investec-pb-api": "^0.3.10",

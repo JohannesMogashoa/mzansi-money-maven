@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 
+import AccountSelector from "./account-selector";
 import { Brain } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -31,7 +32,10 @@ const Header = () => {
 					</span>
 				</div>
 				<Authenticated>
-					<UserButton />
+					<div className="flex items-center gap-3">
+						<AccountSelector />
+						<UserButton />
+					</div>
 				</Authenticated>
 				<Unauthenticated>
 					<NavigationMenu

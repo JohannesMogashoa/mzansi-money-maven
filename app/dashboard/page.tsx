@@ -10,11 +10,79 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useInvestec } from "@/lib/contexts/investec-context";
 import { useRouter } from "next/navigation";
+
+dayjs.extend(relativeTime);
 
 const DashboardPage = () => {
 	const [showBalance, setShowBalance] = useState(true);
 	const router = useRouter();
+	const {
+		transactions,
+		accountBalance,
+		selectedAccount,
+		isLoadingTransactions,
+	} = useInvestec();
+
+	const TransactionsCard = () => {
+		if (selectedAccount === null) {
+			return (
+				<p className="text-sm text-muted-foreground">
+					Please select an account to view transactions.
+				</p>
+			);
+		}
+
+		if (transactions.length === 0 && !isLoadingTransactions) {
+			return (
+				<p className="text-sm text-muted-foreground">
+					No recent transactions available.
+				</p>
+			);
+		}
+
+		if (isLoadingTransactions) {
+			return (
+				<p className="text-sm text-muted-foreground">
+					Loading transactions...
+				</p>
+			);
+		}
+
+		return transactions.slice(0, 5).map((tx) => (
+			<div
+				key={tx.uuid}
+				className="flex items-center justify-between py-3 border-b border-border/40 last:border-0"
+			>
+				<div>
+					<p className="font-medium text-foreground">
+						{tx.description}
+					</p>
+					<p className="text-sm text-muted-foreground">
+						{tx.transactionType}
+					</p>
+				</div>
+				<div className="text-right">
+					<p
+						className={`font-semibold ${
+							tx.type === "CREDIT"
+								? "text-green-400"
+								: "text-foreground"
+						}`}
+					>
+						{`${tx.type === "CREDIT" ? "+" : "-"} ${tx.amount}`}
+					</p>
+					<p className="text-xs text-muted-foreground">
+						{dayjs(tx.transactionDate).fromNow()}
+					</p>
+				</div>
+			</div>
+		));
+	};
+
 	return (
 		<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			{/* Account Overview Card */}
@@ -26,7 +94,9 @@ const DashboardPage = () => {
 						</p>
 						<div className="flex items-center gap-3">
 							<h2 className="text-4xl font-bold text-foreground">
-								{showBalance ? "R 247,583" : "••••••"}
+								{showBalance
+									? `R ${accountBalance ?? "-"}`
+									: "••••••"}
 							</h2>
 							<button
 								onClick={() => setShowBalance(!showBalance)}
@@ -143,60 +213,7 @@ const DashboardPage = () => {
 					Recent Transactions
 				</h3>
 				<div className="space-y-4">
-					{[
-						{
-							name: "Checkers",
-							category: "Groceries",
-							amount: "-R 247.50",
-							date: "Today",
-						},
-						{
-							name: "MTN Mobile",
-							category: "Utilities",
-							amount: "-R 149.99",
-							date: "Yesterday",
-						},
-						{
-							name: "Salary Deposit",
-							category: "Income",
-							amount: "+R 18,500",
-							date: "2 days ago",
-						},
-						{
-							name: "Amazon Prime",
-							category: "Subscriptions",
-							amount: "-R 99",
-							date: "3 days ago",
-						},
-					].map((tx, i) => (
-						<div
-							key={i}
-							className="flex items-center justify-between py-3 border-b border-border/40 last:border-0"
-						>
-							<div>
-								<p className="font-medium text-foreground">
-									{tx.name}
-								</p>
-								<p className="text-sm text-muted-foreground">
-									{tx.category}
-								</p>
-							</div>
-							<div className="text-right">
-								<p
-									className={`font-semibold ${
-										tx.amount.startsWith("+")
-											? "text-green-400"
-											: "text-foreground"
-									}`}
-								>
-									{tx.amount}
-								</p>
-								<p className="text-xs text-muted-foreground">
-									{tx.date}
-								</p>
-							</div>
-						</div>
-					))}
+					<TransactionsCard />
 				</div>
 			</div>
 		</main>
