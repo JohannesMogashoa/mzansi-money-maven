@@ -30,16 +30,14 @@ export const completeOnboarding = async (formData: FormData) => {
 	const client = await clerkClient();
 
 	try {
-		const dbUserId = await convex.mutation(api.users.createUser, {
+		const dbUser = await convex.query(api.users.current, {
 			clerkId: userId!,
-			name: user.fullName || "No Name",
-			email: user.emailAddresses[0]?.emailAddress || "No Email",
 		});
 
 		const integration = await convex.mutation(
 			api.integrations.addIntegration,
 			{
-				userId: dbUserId,
+				userId: dbUser!._id,
 				clientId: clientId,
 				clientSecret: encrypt(clientSecret),
 				apiKey: encrypt(apiKey),

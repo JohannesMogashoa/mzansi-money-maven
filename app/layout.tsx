@@ -16,6 +16,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import type { Metadata } from "next";
 import type React from "react";
+import { Toaster } from "sonner";
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -60,6 +61,7 @@ export default function RootLayout({
 						</main>
 						<Footer />
 						<Analytics />
+						<Toaster />
 					</ConvexClientProvider>
 				</ClerkProvider>
 			</body>

@@ -9,6 +9,9 @@ import { fetchAccountTransactions, fetchAccounts } from "@/actions/accounts";
 
 import { Account } from "@/types/globals";
 import { AccountTransaction } from "investec-pb-api";
+import { Authenticated } from "convex/react";
+import { setUserPreferenceAccount } from "@/actions/users";
+import { toast } from "sonner";
 
 export interface InvestecClientState {
 	accounts: Account[];
@@ -94,6 +97,12 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 		setError(null);
 
 		try {
+			const response = await setUserPreferenceAccount(accountId);
+
+			if (response.error) {
+				throw new Error(response.error);
+			}
+
 			const result = await fetchAccountTransactions(accountId);
 
 			if (result.error) {
@@ -101,8 +110,18 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 			}
 			setAccountBalance(result.balance);
 			setTransactions(result.transactions);
+
+			console.log(
+				"Fetched transactions:",
+				result.transactions.splice(0, 5)
+			);
 		} catch (error) {
 			setError(
+				error instanceof Error
+					? error.message
+					: "Unable to fetch transactions"
+			);
+			toast.error(
 				error instanceof Error
 					? error.message
 					: "Unable to fetch transactions"

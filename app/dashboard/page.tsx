@@ -52,9 +52,9 @@ const DashboardPage = () => {
 			);
 		}
 
-		return transactions.slice(0, 5).map((tx) => (
+		return transactions.slice(0, 5).map((tx, i) => (
 			<div
-				key={tx.uuid}
+				key={`${tx.uuid}-${i}`}
 				className="flex items-center justify-between py-3 border-b border-border/40 last:border-0"
 			>
 				<div>

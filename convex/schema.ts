@@ -10,10 +10,14 @@ export default defineSchema({
 		email: v.string(),
 		createdAt: v.number(),
 		clerkId: v.string(),
-		preferences: v.object({
-			accountId: v.optional(v.string()),
-		}),
-	}).index("by_email", ["email"]),
+		preferences: v.optional(
+			v.object({
+				accountId: v.optional(v.string()),
+			})
+		),
+	})
+		.index("by_email", ["email"])
+		.index("by_clerk_id", ["clerkId"]),
 
 	integration: defineTable({
 		userId: v.id("users"),

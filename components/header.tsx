@@ -1,6 +1,6 @@
 "use client";
 
-import { Authenticated, Unauthenticated } from "convex/react";
+import { AuthLoading, Authenticated, Unauthenticated } from "convex/react";
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -16,6 +16,7 @@ import AccountSelector from "./account-selector";
 import { Brain } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
@@ -95,6 +96,9 @@ const Header = () => {
 						</NavigationMenuList>
 					</NavigationMenu>
 				</Unauthenticated>
+				<AuthLoading>
+					<Spinner />
+				</AuthLoading>
 			</div>
 		</header>
 	);
