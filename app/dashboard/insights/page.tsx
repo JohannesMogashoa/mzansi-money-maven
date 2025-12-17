@@ -5,13 +5,14 @@ import { ArrowLeft, PieChart, TrendingUp } from "lucide-react";
 import AccountNotSelected from "@/components/account-not-selected";
 import { Button } from "@/components/ui/button";
 import CategorySpendingCard from "@/components/insights/category-card";
+import { PatternCard } from "@/components/insights/pattern-card";
 import React from "react";
 import { useInvestec } from "@/contexts/investec-context";
 
 // "Last Month", "Last 3 Months", "Last Year"
 
 const InsightsPage = () => {
-	const { selectedAccount, isLoadingTransactions } = useInvestec();
+	const { selectedAccount, isLoadingTransactions, patterns } = useInvestec();
 
 	if (!selectedAccount) {
 		return (
@@ -78,51 +79,8 @@ const InsightsPage = () => {
 						</h3>
 					</div>
 					<div className="space-y-4">
-						{[
-							{
-								title: "Weekend Spending Spike",
-								description:
-									"Your spending increases 34% on weekends, primarily on dining and entertainment.",
-								type: "observation",
-							},
-							{
-								title: "Subscription Leak",
-								description:
-									"You have 8 active subscriptions costing R 1,247/month. Consider reviewing.",
-								type: "opportunity",
-							},
-							{
-								title: "Coffee Run Habit",
-								description:
-									"Average R 45 × 22 days = R 990/month on coffee. Could save R 6K annually.",
-								type: "savings",
-							},
-							{
-								title: "Consistent Savings",
-								description:
-									"You consistently save 32% of your income. Great financial discipline!",
-								type: "achievement",
-							},
-						].map((pattern, i) => (
-							<div
-								key={i}
-								className={`p-4 rounded-lg border ${
-									pattern.type === "opportunity"
-										? "bg-orange-500/5 border-orange-500/20"
-										: pattern.type === "savings"
-										? "bg-green-500/5 border-green-500/20"
-										: pattern.type === "achievement"
-										? "bg-primary/5 border-primary/20"
-										: "bg-accent/5 border-accent/20"
-								}`}
-							>
-								<p className="font-medium text-foreground text-sm mb-1">
-									{pattern.title}
-								</p>
-								<p className="text-xs text-muted-foreground">
-									{pattern.description}
-								</p>
-							</div>
+						{patterns.map((pattern, i) => (
+							<PatternCard key={i} pattern={pattern} />
 						))}
 					</div>
 				</div>

@@ -11,8 +11,10 @@ import { Account } from "@/types/globals";
 import { AccountTransaction } from "investec-pb-api";
 import { AnalyticsResponse } from "@/types/analytics-response";
 import { Authenticated } from "convex/react";
+import { PatternResult } from "@/types/pattern";
 import { aggregateByCategory } from "@/utils/aggregates";
 import { buildAnalytics } from "@/utils/build-analytics";
+import { buildPatterns } from "@/lib/patterns/engine";
 import { processInvestecTransactions } from "@/utils/process-transactions";
 import { setUserPreferenceAccount } from "@/actions/users";
 import { toast } from "sonner";
@@ -28,6 +30,7 @@ export interface InvestecClientState {
 	error: string | null;
 
 	analytics: AnalyticsResponse;
+	patterns: PatternResult[];
 
 	setAccounts: (accounts: Account[]) => void;
 	setSelectedAccountById: (accountId: string) => void;
@@ -62,6 +65,7 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 	const [analytics, setAnalytics] = useState<AnalyticsResponse>(
 		{} as AnalyticsResponse
 	);
+	const [patterns, setPatterns] = useState<PatternResult[]>([]);
 
 	const setSelectedAccountById = (accountId: string) => {
 		const account =
@@ -120,7 +124,11 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 			setAccountBalance(result.balance);
 			setTransactions(result.transactions);
 
-			setAnalytics(getAnalytics(result.transactions));
+			const responseAnalytics = getAnalytics(result.transactions);
+			const responsePatterns = getPatterns(result.transactions);
+
+			setAnalytics(responseAnalytics);
+			setPatterns(responsePatterns);
 		} catch (error) {
 			setError(
 				error instanceof Error
@@ -137,6 +145,11 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 		}
 	}, []);
 
+	const getPatterns = useCallback((transactions: AccountTransaction[]) => {
+		const patterns = buildPatterns(transactions);
+		return patterns;
+	}, []);
+
 	const getAnalytics = useCallback((transactions: AccountTransaction[]) => {
 		const analytics = buildAnalytics(transactions);
 		return analytics;
@@ -151,6 +164,7 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 		error,
 		accountBalance,
 		analytics,
+		patterns,
 		setAccounts,
 		setSelectedAccountById,
 		setTransactions,
