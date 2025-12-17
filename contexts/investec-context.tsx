@@ -9,7 +9,11 @@ import { fetchAccountTransactions, fetchAccounts } from "@/actions/accounts";
 
 import { Account } from "@/types/globals";
 import { AccountTransaction } from "investec-pb-api";
+import { AnalyticsResponse } from "@/types/analytics-response";
 import { Authenticated } from "convex/react";
+import { aggregateByCategory } from "@/utils/aggregates";
+import { buildAnalytics } from "@/utils/build-analytics";
+import { processInvestecTransactions } from "@/utils/process-transactions";
 import { setUserPreferenceAccount } from "@/actions/users";
 import { toast } from "sonner";
 
@@ -22,6 +26,8 @@ export interface InvestecClientState {
 	isLoadingAccounts: boolean;
 	isLoadingTransactions: boolean;
 	error: string | null;
+
+	analytics: AnalyticsResponse;
 
 	setAccounts: (accounts: Account[]) => void;
 	setSelectedAccountById: (accountId: string) => void;
@@ -53,6 +59,9 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 	const [isLoadingTransactions, setIsLoadingTransactions] =
 		useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
+	const [analytics, setAnalytics] = useState<AnalyticsResponse>(
+		{} as AnalyticsResponse
+	);
 
 	const setSelectedAccountById = (accountId: string) => {
 		const account =
@@ -111,10 +120,7 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 			setAccountBalance(result.balance);
 			setTransactions(result.transactions);
 
-			console.log(
-				"Fetched transactions:",
-				result.transactions.splice(0, 5)
-			);
+			setAnalytics(getAnalytics(result.transactions));
 		} catch (error) {
 			setError(
 				error instanceof Error
@@ -131,6 +137,11 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 		}
 	}, []);
 
+	const getAnalytics = useCallback((transactions: AccountTransaction[]) => {
+		const analytics = buildAnalytics(transactions);
+		return analytics;
+	}, []);
+
 	const value: InvestecClientState = {
 		accounts,
 		selectedAccount,
@@ -139,6 +150,7 @@ export const InvestecProvider: React.FC<InvestecProviderProps> = ({
 		isLoadingTransactions,
 		error,
 		accountBalance,
+		analytics,
 		setAccounts,
 		setSelectedAccountById,
 		setTransactions,

@@ -13,9 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
 import { useEffect } from "react";
-import { useInvestec } from "@/lib/contexts/investec-context";
+import { useInvestec } from "@/contexts/investec-context";
 
-const AccountSelector = () => {
+const AccountSelector = ({ isHeader = true }: { isHeader: boolean }) => {
 	const { accounts, selectedAccount, setSelectedAccountById, loadAccounts } =
 		useInvestec();
 
@@ -23,13 +23,28 @@ const AccountSelector = () => {
 		loadAccounts();
 	}, []);
 
+	const ButtonContent = () => {
+		if (isHeader) {
+			return (
+				selectedAccount?.productName ?? (
+					<Coins className="w-5 h-5 text-muted-foreground" />
+				)
+			);
+		}
+
+		return (
+			<span className="flex items-center gap-2">
+				<Coins className="w-5 h-5 text-muted-foreground" />
+				{" Please select an account"}
+			</span>
+		);
+	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline">
-					{selectedAccount?.productName ?? (
-						<Coins className="w-5 h-5 text-muted-foreground" />
-					)}
+					<ButtonContent />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56" align="end">
