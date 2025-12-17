@@ -1,0 +1,16 @@
+export type Category =
+	| "groceries"
+	| "eating_out"
+	| "fuel"
+	| "transport"
+	| "shopping"
+	| "entertainment"
+	| "subscriptions"
+	| "utilities"
+	| "housing"
+	| "health"
+	| "cash"
+	| "fees"
+	| "income"
+	| "transfers"
+	| "uncategorized";

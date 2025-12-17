@@ -12,7 +12,7 @@ import React, { useState } from "react";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useInvestec } from "@/lib/contexts/investec-context";
+import { useInvestec } from "@/contexts/investec-context";
 import { useRouter } from "next/navigation";
 
 dayjs.extend(relativeTime);

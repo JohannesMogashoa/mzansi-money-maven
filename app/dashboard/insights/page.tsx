@@ -1,30 +1,57 @@
+"use client";
+
 import { ArrowLeft, PieChart, TrendingUp } from "lucide-react";
 
+import AccountNotSelected from "@/components/account-not-selected";
 import { Button } from "@/components/ui/button";
+import CategorySpendingCard from "@/components/insights/category-card";
 import React from "react";
+import { useInvestec } from "@/contexts/investec-context";
+
+// "Last Month", "Last 3 Months", "Last Year"
 
 const InsightsPage = () => {
+	const { selectedAccount, isLoadingTransactions } = useInvestec();
+
+	if (!selectedAccount) {
+		return (
+			<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<div className="flex flex-col items-center justify-center h-96">
+					<AccountNotSelected />
+				</div>
+			</main>
+		);
+	}
+
+	if (isLoadingTransactions) {
+		return (
+			<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<div className="flex flex-col items-center justify-center h-96">
+					<p className="text-muted-foreground">
+						Loading transactions...
+					</p>
+				</div>
+			</main>
+		);
+	}
+
 	return (
 		<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			{/* Period Selector */}
 			<div className="flex gap-4 mb-8">
-				{["This Month", "Last Month", "Last 3 Months", "Last Year"].map(
-					(period) => (
-						<Button
-							key={period}
-							variant={
-								period === "This Month" ? "default" : "outline"
-							}
-							className={
-								period === "This Month"
-									? "bg-primary text-primary-foreground"
-									: "border-border text-foreground hover:bg-card"
-							}
-						>
-							{period}
-						</Button>
-					)
-				)}
+				{["Overall"].map((period) => (
+					<Button
+						key={period}
+						variant={period === "Overall" ? "default" : "outline"}
+						className={
+							period === "Overall"
+								? "bg-primary text-primary-foreground"
+								: "border-border text-foreground hover:bg-card"
+						}
+					>
+						{period}
+					</Button>
+				))}
 			</div>
 
 			{/* Top Insights */}
@@ -38,55 +65,7 @@ const InsightsPage = () => {
 						</h3>
 					</div>
 					<div className="space-y-4">
-						{[
-							{
-								category: "Groceries & Food",
-								amount: "R 3,247",
-								percent: 28,
-								color: "bg-primary",
-							},
-							{
-								category: "Transport",
-								amount: "R 1,890",
-								percent: 16,
-								color: "bg-accent",
-							},
-							{
-								category: "Entertainment",
-								amount: "R 1,456",
-								percent: 12,
-								color: "bg-green-500",
-							},
-							{
-								category: "Utilities",
-								amount: "R 2,134",
-								percent: 18,
-								color: "bg-orange-500",
-							},
-							{
-								category: "Other",
-								amount: "R 3,120",
-								percent: 26,
-								color: "bg-blue-500",
-							},
-						].map((item, i) => (
-							<div key={i}>
-								<div className="flex justify-between items-center mb-2">
-									<p className="text-sm font-medium text-foreground">
-										{item.category}
-									</p>
-									<p className="text-sm font-semibold text-muted-foreground">
-										{item.amount}
-									</p>
-								</div>
-								<div className="w-full bg-background/50 rounded-full h-2">
-									<div
-										className={`${item.color} h-2 rounded-full`}
-										style={{ width: `${item.percent}%` }}
-									/>
-								</div>
-							</div>
-						))}
+						<CategorySpendingCard />
 					</div>
 				</div>
 
