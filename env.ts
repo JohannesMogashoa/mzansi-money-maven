@@ -6,6 +6,7 @@ export const env = createEnv({
 		CLERK_SECRET_KEY: z.string().min(1),
 		ENCRYPTION_KEY: z.string().length(64),
 		INVESTEC_HOST: z.string().url(),
+		OPENROUTER_API_KEY: z.string().min(1),
 	},
 
 	/**
