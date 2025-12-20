@@ -1,3 +1,5 @@
+import { OpenRouterModels, aiOpenRouter } from "@/lib/open-router";
+
 import { generateObject } from "ai";
 import { z } from "zod";
 
@@ -39,7 +41,7 @@ export async function POST(req: Request) {
 		const { userData } = await req.json();
 
 		const { object } = await generateObject({
-			model: "openai/gpt-5",
+			model: aiOpenRouter.chat(OpenRouterModels.GEMINI_2_0_FLASH),
 			schema: nudgeSchema,
 			messages: [
 				{
@@ -65,7 +67,18 @@ export async function POST(req: Request) {
                             - Spending category optimization
                             - Emergency fund building
                             - Passive income opportunities
-                            - Automation recommendations`,
+                            - Automation recommendations
+                            
+                            ---
+
+                            ## OUTPUT FORMAT (STRICT)
+
+                            Return ONLY valid JSON in the following structure:
+
+                ${nudgeSchema.describe}
+
+                            ---
+                            `,
 				},
 			],
 			maxOutputTokens: 2000,
