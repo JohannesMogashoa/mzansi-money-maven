@@ -10,6 +10,8 @@
 
 import type * as http from "../http.js";
 import type * as integrations from "../integrations.js";
+import type * as syncConfig from "../syncConfig.js";
+import type * as syncLogs from "../syncLogs.js";
 import type * as users from "../users.js";
 
 import type {
@@ -21,6 +23,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   integrations: typeof integrations;
+  syncConfig: typeof syncConfig;
+  syncLogs: typeof syncLogs;
   users: typeof users;
 }>;
 

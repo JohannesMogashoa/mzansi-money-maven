@@ -26,6 +26,43 @@ export default defineSchema({
 		apiKey: v.string(),
 	}).index("by_userId", ["userId"]),
 
+	syncConfigs: defineTable({
+		userId: v.id("users"),
+
+		// Sync settings
+		interval: v.union(
+			v.literal("EVERY_6_HOURS"),
+			v.literal("DAILY"),
+			v.literal("WEEKLY")
+		),
+		enabled: v.boolean(),
+
+		accountId: v.string(),
+
+		// Sync tracking (no transaction data, just metadata)
+		lastSyncAt: v.optional(v.number()),
+		nextSyncAt: v.optional(v.number()),
+		lastTransactionId: v.optional(v.string()), // To avoid re-processing
+	})
+		.index("by_userId", ["userId"])
+		.index("by_nextSync", ["enabled", "nextSyncAt"]),
+
+	syncLogs: defineTable({
+		userId: v.id("users"),
+		status: v.union(
+			v.literal("RUNNING"),
+			v.literal("SUCCESS"),
+			v.literal("FAILED")
+		),
+		startedAt: v.number(),
+		completedAt: v.optional(v.number()),
+
+		transactionsFound: v.number(),
+		transactionsProcessed: v.number(),
+
+		error: v.optional(v.string()),
+	}).index("by_userId", ["userId"]),
+
 	insight: defineTable({
 		userId: v.id("users"),
 		month: v.string(),
